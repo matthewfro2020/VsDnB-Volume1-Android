@@ -55,6 +55,10 @@ class TitleState extends MusicBeatState
 
 	override public function create():Void
 	{
+		#if android
+		FlxG.android.preventDefaultKeys = [BACK]; // lol
+		#end
+		
 		if (FlxG.random.int(0, 999) == 1)
 			LoadingState.loadAndSwitchState(() -> new SusState());
 

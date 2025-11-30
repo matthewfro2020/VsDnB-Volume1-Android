@@ -66,13 +66,11 @@ class Main extends Sprite
 	{
 		PolymodManager.initalize();
 
-		#if android
-		FlxG.android.preventDefaultKeys = [BACK]; // lol
-		#end
-
+		#if !mobile 
 		fps = new FPSDisplay(10, 3, 0xFFFFFF);
 		var fpsFormat = new TextFormat("Comic Sans MS Bold", 15, 0xFFFFFF, true);
 		fps.defaultTextFormat = fpsFormat;
+		#end
 
 		var stageWidth:Int = Lib.current.stage.stageWidth;
 		var stageHeight:Int = Lib.current.stage.stageHeight;
@@ -94,6 +92,8 @@ class Main extends Sprite
 		SUtil.checkFiles();
 		#end
 		addChild(game);
+		#if !mobile
 		addChild(fps);
+		#end
 	}
 }

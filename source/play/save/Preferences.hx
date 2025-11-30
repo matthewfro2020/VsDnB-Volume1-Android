@@ -344,7 +344,9 @@ class Preferences
 	static function set_debugUI(value:Bool):Bool
 	{
 		save.data.debugUI = value;
+		#if !mobile
 		Main.fps.visible = value;
+		#end
 		save.flush();
 		onPreferenceChanged.dispatch('debugUI', value);
 		return value;

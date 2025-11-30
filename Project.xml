@@ -31,6 +31,8 @@
 	<set name="BUILD_DIR" value="export/release" unless="debug" />
 	<set name="BUILD_DIR" value="export/32bit" if="32bit" />
 
+	<define name="mobileC" if="mobile" /> <!--Can be added windows, mac or linux-->
+
 	<assets path="assets/preload" rename="assets" exclude="*.ogg" if="web"/>
 	<assets path="assets/preload" rename="assets" exclude="*.mp3" unless="web"/>
 	<assets path="assets/preload/videos" rename="assets/videos" include="*.mp4" embed='false' />
@@ -46,8 +48,6 @@
 	<define name="SHADERS_ENABLED"/>
 	<define name="PRELOAD_ALL" unless="web" />
 	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL"/>
-
-	<define name="mobileC" if="mobile" /> <!--Can be added windows, mac or linux-->
 
 	<library name="songs" preload="true" />
 
@@ -133,14 +133,13 @@
 
 	<section if="android">
     	<config>
-        	<!-- Gradle -->
         	<android gradle-version="7.4.2" gradle-plugin="7.3.1"/>
+        	<android platform="android-35"/>
+        	<android min-sdk-version="16" target-sdk-version="30" max-sdk-version="33"/>
+        	<android bundle="false"/>
 
-        	<!-- Compile SDK platform (must exist in SDK) -->
-        	<android platform="android-30"/>
-
-        	<!-- Target SDK version for your app -->
-        	<android min-sdk-version="16" target-sdk-version="29" max-sdk-version="33"/>
+        	<!-- Only compile 64-bit (arm64-v8a) -->
+        	<android abi="arm64-v8a"/>
     	</config>
 	</section>
 
