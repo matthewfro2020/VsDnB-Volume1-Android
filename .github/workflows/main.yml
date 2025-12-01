@@ -5,8 +5,6 @@ name: Build
 # Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -33,19 +31,9 @@ jobs:
         run: |
           sudo apt-get install libvlc-dev libvlccore-dev glibc-source libidn-dev libidn12
           haxelib setup ~/haxelib
-          haxelib install hxcpp > /dev/null --quiet
-          haxelib install lime
-          haxelib install openfl
-          haxelib install flixel
-          haxelib install flixel-tools
-          haxelib install flixel-ui
-          haxelib install flixel-addons
-          haxelib install actuate
-          haxelib install tjson
-          haxelib install hxjsonast
-          haxelib install hxCodec
-          haxelib install hscript-iris
-          haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
+          haxelib install hmm
+          haxelib run hmm setup
+          hmm install
           haxelib list
       - name: Create Version Tag
         run: echo "${{github.run_id}}" > VERSION
@@ -70,11 +58,9 @@ jobs:
       - name: Install Haxelib
         run: |
           haxelib setup C:/haxelib
-          haxelib install hxcpp > /dev/null --quiet
           haxelib install hmm
           haxelib run hmm setup
           hmm install
-          haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
           haxelib list
         shell: cmd
       - name: Create Version Tag
@@ -100,19 +86,9 @@ jobs:
       - name: Install Haxelib
         run: |
           haxelib setup ~/haxelib
-          haxelib install hxcpp > /dev/null --quiet
-          haxelib install lime
-          haxelib install openfl
-          haxelib install flixel
-          haxelib install flixel-tools
-          haxelib install flixel-ui
-          haxelib install flixel-addons
-          haxelib install actuate
-          haxelib install tjson
-          haxelib install hxjsonast
-          haxelib install hscript-iris
-          haxelib git hxCodec https://github.com/polybiusproxy/hxCodec
-          haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
+          haxelib install hmm
+          haxelib run hmm setup
+          hmm install
           haxelib list
       - name: Create Version Tag
         run: echo "${{github.run_id}}" > VERSION
