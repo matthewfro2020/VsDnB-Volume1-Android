@@ -579,11 +579,6 @@ public function beginSustain(note:Note)
         sus.strum.holdConfirm();
 }
 
-public inline function getHitWindow(note:Note):Float
-{
-    return Preferences.hitWindow ?? 155;
-}
-
 	function set_scrollType(value:String):String
 	{
 		if (dadStrums != null)
