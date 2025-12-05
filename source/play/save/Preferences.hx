@@ -169,9 +169,20 @@ class Preferences
 		return save?.data?.cutscenes;
 	}
 
-    public static var botplay(get, set):Bool;
-    static inline function get_botplay() return getBool("botplay");
-    static inline function set_botplay(v:Bool) return setValue("botplay", v);
+public static var botplay(get, set):Bool;
+
+static function set_botplay(value:Bool):Bool
+{
+    save.data.botplay = value;
+    save.flush();
+    onPreferenceChanged.dispatch('botplay', value);
+    return value;
+}
+
+static function get_botplay():Bool
+{
+    return save?.data?.botplay;
+}
 
 	// ACCESSIBILITY //
 
