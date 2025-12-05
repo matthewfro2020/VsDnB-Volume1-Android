@@ -803,7 +803,7 @@ if (botplay) {
 botplayTxt.visible = true;
  botplayAutoHit();
 }
-#else
+else {
 botplayTxt.visible = false;
  handleInputs();
 }
