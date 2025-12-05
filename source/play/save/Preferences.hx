@@ -51,6 +51,8 @@ class Preferences
 		'fps' => 144,
 		'borderless' => false,
 		'darkMode' => false,
+	
+        'botplay' => false
 	];
 
 	/**
@@ -166,6 +168,10 @@ class Preferences
 	{
 		return save?.data?.cutscenes;
 	}
+
+    public static var botplay(get, set):Bool;
+    static inline function get_botplay() return getBool("botplay");
+    static inline function set_botplay(v:Bool) return setValue("botplay", v);
 
 	// ACCESSIBILITY //
 
