@@ -226,126 +226,6 @@ public var botplayEnabled:Bool = false;
 private var botplayTxt:FlxText;
 public static var botplay:Bool = false;
 
-/**
- * Handles ALL note-hit logic in one place.
- * Works for botplay, normal notes, danger/phone notes,
- * sustain starts, sustain ticks, etc.
- */
-public function handleNoteHit(note:Note)
-{
-    if (note == null || note.hasBeenHit || note.hasMissed)
-        return;
-
-    // ----------------------------
-    // 1. DETERMINE IF BOTPLAY SHOULD AUTO-HIT
-    // ----------------------------
-    final botActive:Bool = FlxG.save.data.botplay == true;
-
-    if (botActive && note.mustPress)
-    {
-        // Auto-hit timing
-        if (Conductor.songPosition >= note.strumTime - 15)
-        {
-            registerGoodHit(note);
-        }
-        return; // Bot handled it
-    }
-
-    // ----------------------------
-    // 2. PLAYER INPUT HIT
-    // ----------------------------
-    if (note.mustPress)
-    {
-        final hitWindow = getHitWindow(note);
-
-        if (Math.abs(Conductor.songPosition - note.strumTime) <= hitWindow)
-        {
-            registerGoodHit(note);
-        }
-    }
-}
-
-/**
- * Registers a GOOD HIT (player or bot).
- */
-public function registerGoodHit(note:Note)
-{
-    if (note.hasBeenHit) return;
-
-    note.hasBeenHit = true;
-    note.wasGoodHit = true;
-
-    // --------------------------------------
-    // DODGE NOTES (PHONE NOTES)
-    // --------------------------------------
-    if (note.type == "phone" || note.type == "danger" || note.phoneHit == true)
-    {
-        triggerDodgeAnimation(note);
-    }
-
-    // --------------------------------------
-    // STRUM ANIMATIONS
-    // --------------------------------------
-    if (note.strum != null)
-    {
-        if (!note.isSustain)
-            note.strum.playConfirm(true);
-        else
-            note.strum.holdConfirm(true);
-    }
-
-    // --------------------------------------
-    // NORMAL NOTE HIT EFFECTS
-    // --------------------------------------
-    if (!note.isSustain)
-    {
-        addScore(350);
-        health += 0.023;
-    }
-
-    // --------------------------------------
-    // START SUSTAIN NOTE
-    // --------------------------------------
-    if (note.sustainNote != null)
-    {
-        beginSustain(note);
-    }
-
-    // --------------------------------------
-    // Remove normal notes visually
-    // --------------------------------------
-    if (!note.isSustain)
-    {
-        note.alpha = 0.3;
-        note.kill();
-        notes.remove(note, true);
-    }
-}
-
-/**
- * Plays the dodge animation when a danger/phone note is hit.
- */
-public function triggerDodgeAnimation(note:Note)
-{
-    // PLAYER
-    if (note.mustPress)
-    {
-        if (player != null && player.hasAnimation("dodge"))
-        {
-            player.playAnim("dodge", true);
-        }
-    }
-
-    // BOT/OPPONENT
-    else
-    {
-        if (dad != null && dad.hasAnimation("dodge"))
-        {
-            dad.playAnim("dodge", true);
-        }
-    }
-}
-
 private function botplayHit(note:Note)
 {
     // Mark as hit
@@ -558,25 +438,6 @@ if (note.sustainNote == null)
             pl.releaseKey(hold.direction);
         }
     });
-}
-
-	/**
- * Handles the "start" of a sustain note hold.
- */
-public function beginSustain(note:Note)
-{
-    var sus:SustainNote = note.sustainNote;
-    if (sus == null) return;
-
-    sus.hasBeenHit = true;
-
-    // score & health
-    addScore(50);
-    health += 0.005;
-
-    // play hold animation
-    if (sus.strum != null)
-        sus.strum.holdConfirm();
 }
 
 	function set_scrollType(value:String):String
@@ -1073,7 +934,8 @@ botplayTxt.visible = true;
  botplayAutoHit();
 }
 else {
-botplayTxt.visible = false;
+botplayTxt.visible = true;
+ botplayAutoHit();
 }
 }
 		if (FlxG.keys.justPressed.SEVEN)
