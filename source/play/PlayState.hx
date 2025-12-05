@@ -220,6 +220,96 @@ class PlayState extends MusicBeatState
 	 */
 	public var scrollType(default, set):String;
 	
+		
+public var botplayEnabled:Bool = false;
+private var botplayTxt:FlxText;
+public static var botplay:Bool = false;
+
+// =======================================================
+// Basic botplay hit helper
+// =======================================================
+private function botplayHit(note:Note):Void {
+    // Mark as hit
+    note.hasBeenHit = true;
+
+    // Internal scoring logic
+    playingStrumline.hitNote(note);
+
+    // Trigger player animation
+    if (playingChar != null) {
+        playingChar.sing(note.direction);
+        playingChar.holdTimer = 0;
+    }
+}
+
+// =======================================================
+// FULL AUTO PLAYER / D&B STYLE BOTPLAY
+// =======================================================
+public function botplayAutoHit():Void {
+    if (playerStrums == null)
+        return;
+
+    // Show BOTPLAY text
+    botplayTxt.visible = true;
+
+    // 1. ALL hittable tap notes
+    var possible:Array<Note> = playerStrums.getPossibleNotes();
+
+    // Sort closest → farthest
+    haxe.ds.ArraySort.sort(possible, function(a, b) {
+        return Reflect.compare(
+            Math.abs(Conductor.instance.songPosition - a.strumTime),
+            Math.abs(Conductor.instance.songPosition - b.strumTime)
+        );
+    });
+
+    // ==================================================
+    // TAP NOTES
+    // ==================================================
+    for (note in possible) {
+        if (note == null) continue;
+        if (note.hasBeenHit) continue;
+
+        // SUSTAIN HEAD
+        if (note.sustainNote != null && note.isSustainHead) {
+            playerStrums.pressKey(note.direction);
+            playerStrums.hitNote(note);
+            continue;
+        }
+
+        // PHONE NOTE
+        if (note.noteStyle == "phone") {
+            botplayPhoneHit(note);
+            continue;
+        }
+
+        // NORMAL NOTE
+        playerStrums.pressKey(note.direction);
+        playerStrums.hitNote(note);
+        playerStrums.releaseKey(note.direction);
+    } // <-- THIS } closes TAP NOTES loop
+
+    // ==================================================
+    // SUSTAIN NOTE HOLDING
+    // ==================================================
+    playerStrums.forEachHoldNote(function(s:SustainNote) {
+        if (s == null) return var now = Conductor.instance.songPosition;
+        var start = s.strumTime;
+        var end   = s.strumTime + s.length;
+
+        var active = now >= start && now <= end;
+
+        if (active && !s.wasGoodHit) {
+            playerStrums.pressKey(s.direction);
+            playerStrums.hitHoldNote(s);
+        }
+
+        if (!active && s.wasGoodHit) {
+            playerStrums.releaseKey(s.direction);
+        }
+    }); // <-- fully closes sustain callback
+} // <-- FINALLY closes botplayAutoHit
+
 	function set_scrollType(value:String):String
 	{
 		if (dadStrums != null)
@@ -658,6 +748,17 @@ class PlayState extends MusicBeatState
 		initalizeCamera();
 
 		initalizeUI();
+		
+		var font:String = Paths.font("comic.ttf");
+
+		botplayTxt = new FlxText(healthBar.x + healthBar.width / 2 - 75, healthBar.y + (FlxG.save.data.downscroll ? 100 : -100), 0,;
+		"BOTPLAY", 20);
+ botplayTxt.setFormat(Paths.font("comic.ttf"), 42, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
+		botplayTxt.scrollFactor.set();
+		botplayTxt.borderSize = 3;
+		botplayTxt.visible = botplay;
+ botplayTxt.cameras = [camHUD];
+		add(botplayTxt);
 
 		generateSong();
 
@@ -678,7 +779,20 @@ class PlayState extends MusicBeatState
 
 		if ((isInCutscene && FlxG.keys.justPressed.ESCAPE #if android || FlxG.android.justReleased.BACK #end) || (FlxG.keys.justPressed.ENTER #if android || FlxG.android.justReleased.BACK #end && Countdown.countdownStarted && canPause))
 			runPause();
+	
+ botplayTxt.visible = Preferences.botplay;
 
+	// BOTPLAY INPUT CONTROLLER
+	if (!isInCutscene) {
+if (botplay) {
+botplayTxt.visible = true;
+ botplayAutoHit();
+}
+#else
+botplayTxt.visible = false;
+ handleInputs();
+}
+}
 		if (FlxG.keys.justPressed.SEVEN)
 		{
 			// Pressing seven will enable custom callback functionaility. 
