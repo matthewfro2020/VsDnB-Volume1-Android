@@ -1324,7 +1324,7 @@ botplayTxt.visible = true;
 					SoundController.cache(Paths.sound('note_click'));
 				}
 			case 'minimalUI':
-				Main.fps.visible = value ? false : Preferences.debugUI;
+				#if !mobile Main.fps.visible = value ? false : Preferences.debugUI; #end
 		}
 		onPreferenceChangedPost.dispatch(preference, value);
 	}
@@ -1977,7 +1977,7 @@ botplayTxt.visible = true;
 		var downR = controls.DOWN_R;
 		var leftR = controls.LEFT_R;
 		
-		var key5 = controls.KEY5 && shapeNoteSongs.contains(currentSong.id.toLowerCase());
+		var key5 = shapeNoteSongs != null && shapeNoteSongs.contains(currentSong.id.toLowerCase()) && (controls.KEY5 #if mobileC || (virtualPad.buttonA != null && virtualPad.buttonA.pressed) #end);
 
 		var controlArray:Array<Bool> = [leftP, downP, upP, rightP];
 		var releaseArray:Array<Bool> = [leftR, downR, upR, rightR];
@@ -2585,8 +2585,6 @@ botplayTxt.visible = true;
 		var rightP = controls.RIGHT_P;
 		var downP = controls.DOWN_P;
 		var leftP = controls.LEFT_P;
-
-		var controlArray:Array<Bool> = [leftP, downP, upP, rightP];
 
 		for (i in 0...controlArray.length)
 		{
