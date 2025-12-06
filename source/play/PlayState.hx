@@ -2586,6 +2586,8 @@ botplayTxt.visible = true;
 		var downP = controls.DOWN_P;
 		var leftP = controls.LEFT_P;
 
+		var controlArray:Array<Bool> = [leftP, downP, upP, rightP];
+
 		for (i in 0...controlArray.length)
 		{
 			if (controlArray[i])
