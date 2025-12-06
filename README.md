@@ -62,6 +62,10 @@ Steps to play:
 4. Copy and paste this to "/storage/emulated/0/Android/media/dnbteam.daveandbambi/" (or "Android/media/dnbteam.daveandbambi/").
 5. Restart the app. it should work!
 
+# For Android 10 Users
+For some reason, The app doesn't automatically create the folder, so you would need to create it yourself!
+Create a folder at "Android/media/dnbteam.dnbteam/", and you should see that the app works.
+
 ## Mod Support for Android
 Volume 1 Supports Polymod, which is used for mods (like V-Slice!)
 
@@ -74,4 +78,3 @@ Here are steps to play mods in it.
 4. (Re)open the app, and you should see your mods there.
 
 Polymod uses a custom filesystem, but not for android, so I modified it to support mods for android.
-
