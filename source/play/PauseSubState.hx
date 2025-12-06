@@ -460,6 +460,11 @@ class PauseSubState extends MusicBeatSubstate
 	 */
 	static function openSettingsMenu(state:PauseSubState):Void
 	{
+		#if mobileC
+    	if (Std.isOfType(state, MusicBeatSubstate)) {
+       		(cast state:MusicBeatSubstate).removeVirtualPad();
+    	}
+    	#end
 		state.openSubState(new SettingsMenu());
 	}
 
